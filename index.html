@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Curtains</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Smart Curtains</h1>
+      <p class="muted">Система управления автоматическими шторами</p>
+    </div>
+    <div class="status">
+      <span id="cloudDot" class="dot"></span>
+      <span id="cloudText">Локально</span>
+      <span class="sep">·</span>
+      <span id="clock">--:--</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Сводка -->
+    <section class="stats">
+      <div class="stat"><span class="muted">Освещённость</span><b id="sLux">–</b></div>
+      <div class="stat"><span class="muted">Температура</span><b id="sTemp">–</b></div>
+      <div class="stat"><span class="muted">Средн. открытие</span><b id="sAvg">–</b></div>
+      <div class="stat"><span class="muted">Движений сегодня</span><b id="sMoves">–</b></div>
+    </section>
+
+    <!-- Шторы -->
+    <section class="card">
+      <div class="card-head">
+        <h2>Шторы</h2>
+        <div class="btn-row">
+          <button class="btn" data-all="100">Открыть все</button>
+          <button class="btn" data-all="0">Закрыть все</button>
+        </div>
+      </div>
+      <div id="curtains" class="curtains"></div>
+    </section>
+
+    <div class="grid2">
+      <!-- Датчики -->
+      <section class="card">
+        <div class="card-head">
+          <h2>Виртуальные датчики</h2>
+          <label class="switch"><input type="checkbox" id="simToggle"><span></span> Авто-симуляция</label>
+        </div>
+
+        <div class="field">
+          <div class="field-top"><span>☀️ Освещённость</span><b id="luxVal"></b></div>
+          <input type="range" id="lux" min="0" max="100000" step="500">
+        </div>
+        <div class="field">
+          <div class="field-top"><span>🌡️ Температура в комнате</span><b id="tempVal"></b></div>
+          <input type="range" id="temp" min="0" max="40" step="0.5">
+        </div>
+        <div class="field">
+          <div class="field-top"><span>🚶 Присутствие людей</span>
+            <label class="switch"><input type="checkbox" id="presence"><span></span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Автоматизация -->
+      <section class="card">
+        <div class="card-head"><h2>Автоматизация</h2></div>
+        <p class="muted small">Работает для штор в режиме «Авто». Приоритет сверху вниз.</p>
+        <ol class="rules">
+          <li>Освещённость ниже <input type="number" id="luxNight" class="num"> лк → закрыть (ночь)</li>
+          <li>Температура выше <input type="number" id="tempHigh" class="num"> °C и никого нет → закрыть (энергосбережение)</li>
+          <li>Освещённость выше <input type="number" id="luxHigh" class="num"> лк → прикрыть до <input type="number" id="shadePos" class="num"> %</li>
+          <li>Иначе → открыть полностью</li>
+        </ol>
+        <p class="muted small" id="ruleNow"></p>
+      </section>
+    </div>
+
+    <div class="grid2">
+      <!-- График -->
+      <section class="card">
+        <div class="card-head"><h2>График показаний</h2></div>
+        <div class="chart-box"><canvas id="chart"></canvas></div>
+      </section>
+
+      <!-- Расписание -->
+      <section class="card">
+        <div class="card-head"><h2>Расписание</h2></div>
+        <form id="schedForm" class="sched-form">
+          <input type="time" id="schedTime" required>
+          <select id="schedRoom"></select>
+          <select id="schedPos">
+            <option value="100">Открыть</option>
+            <option value="50">50 %</option>
+            <option value="0">Закрыть</option>
+          </select>
+          <button class="btn primary">Добавить</button>
+        </form>
+        <ul id="schedList" class="list"></ul>
+      </section>
+    </div>
+
+    <!-- История -->
+    <section class="card">
+      <div class="card-head">
+        <h2>История событий</h2>
+        <button class="btn" id="clearLog">Очистить</button>
+      </div>
+      <ul id="log" class="list log"></ul>
+    </section>
+  </main>
+
+  <div id="toasts" class="toasts"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
